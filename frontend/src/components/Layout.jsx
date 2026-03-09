@@ -87,7 +87,7 @@ const Layout = ({ children }) => {
           display: 'flex',
           flexDirection: 'column',
           width: { md: `calc(100% - 260px)` },
-          bgcolor: 'grey.50',
+          bgcolor: '#F7F9FC',
         }}
       >
         {/* Top AppBar */}
@@ -95,10 +95,10 @@ const Layout = ({ children }) => {
           position="sticky"
           elevation={0}
           sx={{
-            bgcolor: 'white',
+            bgcolor: '#FFFFFF',
             color: 'text.primary',
-            borderBottom: '1px solid',
-            borderColor: 'divider',
+            borderBottom: '1px solid #E0E0E0',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
             zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         >
@@ -192,7 +192,7 @@ const Layout = ({ children }) => {
           sx={{
             flexGrow: 1,
             p: 3,
-            bgcolor: 'grey.50',
+            bgcolor: '#F7F9FC',
             minHeight: 'calc(100vh - 64px)',
           }}
         >

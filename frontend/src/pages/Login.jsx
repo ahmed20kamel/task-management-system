@@ -10,7 +10,6 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 
@@ -45,31 +44,32 @@ const Login = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%)',
+        background: 'linear-gradient(135deg, #1A3A5C 0%, #2A6496 100%)',
       }}
     >
       <Container maxWidth="sm">
-        <Paper elevation={6} sx={{ p: 5, borderRadius: 3 }}>
+        <Paper elevation={8} sx={{ p: 5, borderRadius: 4 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
             <Box
               sx={{
-                width: 56,
-                height: 56,
-                borderRadius: '50%',
-                bgcolor: 'primary.main',
+                width: 64,
+                height: 64,
+                borderRadius: '16px',
+                bgcolor: '#1A3A5C',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mb: 2,
+                boxShadow: '0 4px 14px rgba(26,58,92,0.3)',
               }}
             >
-              <LockOutlined sx={{ color: 'white', fontSize: 28 }} />
+              <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>N</Typography>
             </Box>
-            <Typography variant="h5" fontWeight={600} color="primary.main">
-              {t('auth.login')}
+            <Typography variant="h6" fontWeight={600} color="#1A3A5C">
+              Norka Solution
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              {t('app.title')}
+            <Typography variant="h5" fontWeight={600} color="primary.main" sx={{ mt: 1 }}>
+              {t('auth.login')}
             </Typography>
           </Box>
 

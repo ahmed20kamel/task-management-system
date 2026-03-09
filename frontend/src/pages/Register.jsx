@@ -67,12 +67,32 @@ const Register = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%)',
+        background: 'linear-gradient(135deg, #1A3A5C 0%, #2A6496 100%)',
         py: 4,
       }}
     >
     <Container maxWidth="sm">
-      <Paper elevation={6} sx={{ p: 5, borderRadius: 3 }}>
+      <Paper elevation={8} sx={{ p: 5, borderRadius: 4 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+          <Box
+            sx={{
+              width: 56,
+              height: 56,
+              borderRadius: '14px',
+              bgcolor: '#1A3A5C',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 1.5,
+              boxShadow: '0 4px 14px rgba(26,58,92,0.3)',
+            }}
+          >
+            <Typography variant="h5" sx={{ color: 'white', fontWeight: 700 }}>N</Typography>
+          </Box>
+          <Typography variant="subtitle2" color="#1A3A5C" fontWeight={600}>
+            Norka Solution
+          </Typography>
+        </Box>
         <Typography variant="h5" fontWeight={600} gutterBottom align="center" color="primary.main">
           إنشاء حساب جديد
         </Typography>

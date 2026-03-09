@@ -114,10 +114,10 @@ const Sidebar = ({ open, onClose, mobile }) => {
           }}
         />
         <Typography variant="h6" fontWeight={600} align="center">
-          شركة ال يافور
+          Norka Solution
         </Typography>
         <Typography variant="caption" align="center" sx={{ opacity: 0.9 }}>
-          للنقليات والمقاولات العامة
+          نظام إدارة المهام
         </Typography>
       </Box>
 
@@ -168,17 +168,17 @@ const Sidebar = ({ open, onClose, mobile }) => {
               onClick={() => handleNavigation(item.path)}
               sx={{
                 '&.Mui-selected': {
-                  bgcolor: 'primary.light',
+                  bgcolor: '#2A6496',
                   color: 'white',
                   '&:hover': {
-                    bgcolor: 'primary.dark',
+                    bgcolor: '#1A3A5C',
                   },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
                   },
                 },
                 '&:hover': {
-                  bgcolor: 'action.hover',
+                  bgcolor: 'rgba(42,100,150,0.08)',
                 },
               }}
             >
@@ -200,7 +200,7 @@ const Sidebar = ({ open, onClose, mobile }) => {
       {/* Footer */}
       <Box sx={{ p: 2, textAlign: 'center' }}>
         <Typography variant="caption" color="text.secondary">
-          © 2024 شركة ال يافور
+          © Norka Solution 2026
         </Typography>
       </Box>
     </Box>

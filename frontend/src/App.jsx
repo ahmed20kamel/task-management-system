@@ -27,15 +27,15 @@ const theme = createTheme({
   direction: isRtl ? 'rtl' : 'ltr',
   palette: {
     primary: {
-      main: '#1e3a5f',
-      light: '#4a6fa5',
-      dark: '#0d2137',
+      main: '#1A3A5C',
+      light: '#2A6496',
+      dark: '#0F2640',
       contrastText: '#fff',
     },
     secondary: {
-      main: '#00897b',
-      light: '#4ebaaa',
-      dark: '#005b4f',
+      main: '#2A6496',
+      light: '#4A8AC4',
+      dark: '#1A3A5C',
       contrastText: '#fff',
     },
     warning: {
@@ -59,23 +59,19 @@ const theme = createTheme({
       dark: '#01579b',
     },
     background: {
-      default: '#f0f2f5',
+      default: '#F7F9FC',
       paper: '#ffffff',
+    },
+    text: {
+      primary: '#1A1A1A',
+      secondary: '#5A6A7A',
     },
   },
   typography: {
-    fontFamily: isRtl 
-      ? '"Segoe UI", "Tahoma", "Arial", sans-serif'
-      : '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
-    h4: {
-      fontWeight: 600,
-    },
-    h5: {
-      fontWeight: 600,
-    },
-    h6: {
-      fontWeight: 600,
-    },
+    fontFamily: '"Cairo", "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
+    h4: { fontWeight: 600 },
+    h5: { fontWeight: 600 },
+    h6: { fontWeight: 600 },
   },
   components: {
     MuiButton: {
@@ -84,6 +80,13 @@ const theme = createTheme({
           textTransform: 'none',
           borderRadius: 8,
           fontWeight: 500,
+          cursor: 'pointer',
+        },
+        containedPrimary: {
+          backgroundColor: '#2A6496',
+          '&:hover': {
+            backgroundColor: '#1A3A5C',
+          },
         },
       },
     },
@@ -91,7 +94,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
         },
       },
     },
@@ -99,6 +102,22 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 6,
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#EEF4FF !important',
+          },
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          padding: '12px 16px',
         },
       },
     },
@@ -149,11 +168,6 @@ function App() {
   const currentTheme = React.useMemo(() => createTheme({
     ...theme,
     direction: isRtl ? 'rtl' : 'ltr',
-    typography: {
-      fontFamily: isRtl 
-        ? '"Segoe UI", "Tahoma", "Arial", sans-serif'
-        : '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
-    },
   }), [isRtl]);
 
   // Set HTML direction and language attributes
