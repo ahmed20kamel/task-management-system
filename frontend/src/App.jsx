@@ -14,6 +14,9 @@ import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import TaskDetail from './pages/TaskDetail';
+import TeamsPage from './pages/TeamsPage';
+import RatingsReviewPage from './pages/RatingsReviewPage';
+import ProfilePage from './pages/ProfilePage';
 import Layout from './components/Layout';
 
 // Get language from localStorage or default to Arabic
@@ -24,37 +27,78 @@ const theme = createTheme({
   direction: isRtl ? 'rtl' : 'ltr',
   palette: {
     primary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#1e3a5f',
+      light: '#4a6fa5',
+      dark: '#0d2137',
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#dc004e',
-      light: '#ff5983',
-      dark: '#9a0036',
+      main: '#00897b',
+      light: '#4ebaaa',
+      dark: '#005b4f',
+      contrastText: '#fff',
     },
     warning: {
-      main: '#ed6c02',
-      light: '#ff9800',
+      main: '#f5a623',
+      light: '#ffc107',
       dark: '#e65100',
     },
-    orange: {
-      main: '#ff9800',
-      light: '#ffb74d',
-      dark: '#f57c00',
-      contrastText: '#fff',
+    error: {
+      main: '#dc3545',
+      light: '#ef5350',
+      dark: '#c62828',
+    },
+    success: {
+      main: '#28a745',
+      light: '#66bb6a',
+      dark: '#1b5e20',
+    },
+    info: {
+      main: '#17a2b8',
+      light: '#4fc3f7',
+      dark: '#01579b',
+    },
+    background: {
+      default: '#f0f2f5',
+      paper: '#ffffff',
     },
   },
   typography: {
     fontFamily: isRtl 
       ? '"Segoe UI", "Tahoma", "Arial", sans-serif'
       : '"Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 600,
+    },
+    h6: {
+      fontWeight: 600,
+    },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none',
+          borderRadius: 8,
+          fontWeight: 500,
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 6,
         },
       },
     },
@@ -136,6 +180,8 @@ function App() {
                     <Routes>
                       <Route index element={<AdminDashboard />} />
                       <Route path="tasks/:id" element={<TaskDetail />} />
+                      <Route path="teams" element={<TeamsPage />} />
+                      <Route path="ratings" element={<RatingsReviewPage />} />
                     </Routes>
                   </Layout>
                 </PrivateRoute>
@@ -151,6 +197,17 @@ function App() {
                       <Route index element={<EmployeeDashboard />} />
                       <Route path="tasks/:id" element={<TaskDetail />} />
                     </Routes>
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <ProfilePage />
                   </Layout>
                 </PrivateRoute>
               }

@@ -62,9 +62,18 @@ const Register = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        background: 'linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%)',
+        py: 4,
+      }}
+    >
+    <Container maxWidth="sm">
+      <Paper elevation={6} sx={{ p: 5, borderRadius: 3 }}>
+        <Typography variant="h5" fontWeight={600} gutterBottom align="center" color="primary.main">
           إنشاء حساب جديد
         </Typography>
         
@@ -156,10 +165,11 @@ const Register = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            size="large"
+            sx={{ mt: 3, mb: 2, py: 1.5 }}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={24} /> : 'إنشاء الحساب'}
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'إنشاء الحساب'}
           </Button>
           <Box textAlign="center">
             <Link to="/login" style={{ textDecoration: 'none' }}>
@@ -171,6 +181,7 @@ const Register = () => {
         </Box>
       </Paper>
     </Container>
+    </Box>
   );
 };
 

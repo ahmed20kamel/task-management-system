@@ -4,7 +4,11 @@ Django settings for taskapp project.
 
 from pathlib import Path
 import os
-import dj_database_url
+
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,7 +81,7 @@ WSGI_APPLICATION = 'taskapp.wsgi.application'
 
 # Use PostgreSQL if DATABASE_URL is set, otherwise use SQLite
 DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
+if DATABASE_URL and dj_database_url:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,

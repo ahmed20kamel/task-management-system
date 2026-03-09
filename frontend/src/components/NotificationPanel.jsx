@@ -13,11 +13,15 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Close, Delete } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
 
 const NotificationPanel = ({ open, onClose }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -53,6 +57,22 @@ const NotificationPanel = ({ open, onClose }) => {
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const handleNotificationClick = async (notification) => {
+    // Mark as read if unread
+    if (!notification.is_read) {
+      await handleMarkAsRead(notification.id);
+    }
+
+    // Navigate to task if it exists
+    if (notification.task) {
+      const taskPath = user?.role === 'admin' 
+        ? `/admin/tasks/${notification.task}` 
+        : `/dashboard/tasks/${notification.task}`;
+      navigate(taskPath);
+      onClose();
     }
   };
 
@@ -114,9 +134,12 @@ const NotificationPanel = ({ open, onClose }) => {
                   bgcolor: notification.is_read ? 'transparent' : 'action.hover',
                   mb: 1,
                   borderRadius: 1,
-                  cursor: 'pointer',
+                  cursor: notification.task ? 'pointer' : 'default',
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                  },
                 }}
-                onClick={() => !notification.is_read && handleMarkAsRead(notification.id)}
+                onClick={() => notification.task && handleNotificationClick(notification)}
               >
                 <ListItemText
                   primary={

@@ -1,221 +1,97 @@
-# تطبيق إدارة المهام - Task Management App
+# Task Management System
 
-تطبيق شامل لإدارة المهام مع نظام الأدوار (مدير وموظف) مبني باستخدام React و Django.
+A full-stack task management application with role-based access control, team management, and multi-criteria evaluation system.
 
-## المميزات
+## Tech Stack
 
-### للمدير (Admin):
-- ✅ إنشاء وتعديل وحذف المهام
-- ✅ تعيين المهام للموظفين
-- ✅ متابعة جميع المهام
-- ✅ تقييم المهام المكتملة
-- ✅ عرض الإحصائيات (إجمالي المهام، قيد الانتظار، قيد التنفيذ، مكتملة، متأخرة)
-- ✅ استلام إشعارات عند تحديث الموظفين لحالة المهام
+| Layer | Technology |
+|-------|-----------|
+| Backend | Django 4.2, Django REST Framework |
+| Frontend | React 18, Material-UI 5 |
+| Database | SQLite (dev) / PostgreSQL (prod) |
+| Auth | Token-based Authentication |
+| i18n | Arabic (RTL) + English (LTR) |
 
-### للموظف (Employee):
-- ✅ عرض المهام المعينة له
-- ✅ تحديث حالة المهام (قيد الانتظار → قيد التنفيذ → مكتمل)
-- ✅ عرض تفاصيل المهام
-- ✅ عرض التقييمات
-- ✅ استلام إشعارات عند إنشاء مهام جديدة أو تقييم المهام
+## Features
 
-### مميزات عامة:
-- 🔔 نظام إشعارات كامل
-- 📊 لوحات تحكم شاملة
-- ⏰ تتبع مدة المهام وتواريخ الانتهاء
-- ⭐ نظام تقييم للمهام المكتملة (1-5 نجوم)
-- 🔐 نظام مصادقة آمن
-- 📱 واجهة مستخدم عصرية ومتجاوبة
+- **Role-based access**: Admin, Supervisor, Employee hierarchy
+- **Task management**: CRUD with status tracking, priorities, due dates
+- **Team management**: Create teams, assign leaders, manage members
+- **Multi-criteria evaluation**: Quality, Speed, Communication, Problem Solving, Teamwork
+- **Threaded comments** on tasks with edit/delete
+- **Task images**: Upload and manage attachments
+- **Notifications**: Real-time notification system with polling
+- **Task history**: Full audit trail of all changes
+- **Statistics dashboard**: Comprehensive analytics per role
+- **Bilingual UI**: Arabic/English with full RTL support
 
-## المتطلبات
+## Quick Start
 
-### Backend:
-- Python 3.8+
-- Django 4.2+
-- Django REST Framework
-- SQLite (افتراضي) أو PostgreSQL/MySQL
-
-### Frontend:
-- Node.js 14+
-- npm أو yarn
-
-## التثبيت والتشغيل
-
-### 1. إعداد Backend (Django)
+### Backend
 
 ```bash
-# الانتقال لمجلد Backend
 cd backend
-
-# إنشاء بيئة افتراضية (اختياري لكن موصى به)
-python -m venv venv
-
-# تفعيل البيئة الافتراضية
-# على Windows:
-venv\Scripts\activate
-# على Linux/Mac:
-source venv/bin/activate
-
-# تثبيت المتطلبات
 pip install -r requirements.txt
-
-# إجراء migrations
-python manage.py makemigrations
 python manage.py migrate
-
-# إنشاء مستخدم مدير (اختياري)
-python manage.py createsuperuser
-
-# تشغيل الخادم
 python manage.py runserver
 ```
 
-الخادم سيعمل على: `http://localhost:8000`
-
-### 2. إعداد Frontend (React)
+### Frontend
 
 ```bash
-# الانتقال لمجلد Frontend
 cd frontend
-
-# تثبيت المتطلبات
 npm install
-
-# تشغيل التطبيق
 npm start
 ```
 
-التطبيق سيعمل على: `http://localhost:3000`
+Backend runs on `http://localhost:8000` | Frontend on `http://localhost:3000`
 
-## إنشاء المستخدمين
-
-### إنشاء حساب جديد:
-1. افتح التطبيق في المتصفح
-2. اضغط على "ليس لديك حساب؟ سجل الآن"
-3. اختر الدور (مدير أو موظف)
-4. املأ البيانات المطلوبة
-
-### استخدام Django Admin:
-```bash
-# بعد تشغيل الخادم، افتح:
-http://localhost:8000/admin
-
-# واستخدم بيانات المستخدم المدير التي أنشأتها
-```
-
-## هيكل المشروع
+## Project Structure
 
 ```
-TASK APP/
-├── backend/
-│   ├── accounts/          # إدارة المستخدمين والمصادقة
-│   ├── tasks/             # إدارة المهام والتقييمات
-│   ├── notifications/     # نظام الإشعارات
-│   ├── taskapp/           # إعدادات Django
-│   ├── manage.py
-│   └── requirements.txt
-│
-└── frontend/
-    ├── public/
-    ├── src/
-    │   ├── components/    # المكونات القابلة لإعادة الاستخدام
-    │   ├── context/       # Context API للمصادقة
-    │   ├── pages/         # صفحات التطبيق
-    │   ├── services/      # خدمات API
-    │   └── App.js
-    ├── package.json
-    └── README.md
+backend/
+  accounts/       # User management, teams, authentication
+  tasks/          # Tasks, comments, evaluations, history
+  notifications/  # Notification system
+  taskapp/        # Django settings
+
+frontend/src/
+  components/     # Layout, Sidebar, NotificationPanel
+  context/        # AuthContext (state management)
+  pages/          # Dashboard, TaskDetail, Teams, Ratings, Profile
+  services/       # API client (Axios)
+  i18n/           # Translations (ar/en)
 ```
 
 ## API Endpoints
 
-### Authentication:
-- `POST /api/auth/register/` - إنشاء حساب جديد
-- `POST /api/auth/login/` - تسجيل الدخول
-- `POST /api/auth/logout/` - تسجيل الخروج
-- `GET /api/auth/profile/` - عرض الملف الشخصي
-- `PUT /api/auth/profile/update/` - تحديث الملف الشخصي
+### Auth
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register/` | Register |
+| POST | `/api/auth/login/` | Login |
+| POST | `/api/auth/logout/` | Logout |
+| GET | `/api/auth/profile/` | Get profile |
+| PUT | `/api/auth/profile/update/` | Update profile |
 
-### Tasks:
-- `GET /api/tasks/` - قائمة المهام
-- `POST /api/tasks/` - إنشاء مهمة جديدة (مدير فقط)
-- `GET /api/tasks/{id}/` - تفاصيل المهمة
-- `PUT /api/tasks/{id}/` - تحديث المهمة
-- `DELETE /api/tasks/{id}/` - حذف المهمة (مدير فقط)
-- `GET /api/tasks/statistics/` - إحصائيات المهام
+### Tasks
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/tasks/` | List / Create tasks |
+| GET/PUT/DELETE | `/api/tasks/{id}/` | Task detail |
+| GET | `/api/tasks/{id}/history/` | Task history |
+| POST | `/api/tasks/{id}/images/` | Upload image |
+| GET/POST | `/api/tasks/{id}/comments/` | Comments |
+| GET/POST | `/api/tasks/evaluations/` | Evaluations |
+| GET | `/api/tasks/statistics/` | Dashboard stats |
 
-### Evaluations:
-- `GET /api/tasks/evaluations/` - قائمة التقييمات
-- `POST /api/tasks/evaluations/` - إنشاء تقييم جديد (مدير فقط)
+### Teams & Notifications
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/auth/teams/` | List / Create teams |
+| GET | `/api/notifications/` | List notifications |
+| GET | `/api/notifications/unread-count/` | Unread count |
 
-### Notifications:
-- `GET /api/notifications/` - قائمة الإشعارات
-- `PUT /api/notifications/{id}/read/` - تحديد إشعار كمقروء
-- `DELETE /api/notifications/{id}/delete/` - حذف إشعار
-- `GET /api/notifications/unread-count/` - عدد الإشعارات غير المقروءة
+## License
 
-## الصلاحيات
-
-### المدير (Admin):
-- يمكنه إنشاء وتعديل وحذف جميع المهام
-- يمكنه تعيين المهام لأي موظف
-- يمكنه تقييم المهام المكتملة
-- يمكنه عرض جميع المهام
-
-### الموظف (Employee):
-- يمكنه عرض المهام المعينة له فقط
-- يمكنه تحديث حالة المهام
-- يمكنه عرض تقييمات مهامه
-- لا يمكنه إنشاء أو حذف المهام
-
-## الحالات (Status):
-- `pending` - قيد الانتظار
-- `in_progress` - قيد التنفيذ
-- `completed` - مكتمل
-- `cancelled` - ملغي
-
-## الأولويات (Priority):
-- `low` - منخفض
-- `medium` - متوسط
-- `high` - عالي
-- `urgent` - عاجل
-
-## نظام التقييم:
-- من 1 إلى 5 نجوم
-- 1: ضعيف جداً
-- 2: ضعيف
-- 3: متوسط
-- 4: جيد
-- 5: ممتاز
-
-## ملاحظات مهمة
-
-1. **CORS**: تأكد من أن CORS مُعد بشكل صحيح في `backend/taskapp/settings.py` للسماح للـ frontend بالاتصال بالـ backend.
-
-2. **Authentication**: يستخدم التطبيق Token Authentication. يتم حفظ الـ token في localStorage.
-
-3. **Notifications**: يتم إنشاء إشعارات تلقائياً عند:
-   - إنشاء مهمة جديدة (للموظف المعين)
-   - تحديث حالة المهمة من قبل الموظف (للمدير)
-   - تقييم المهمة (للموظف)
-
-4. **التواريخ**: التطبيق يستخدم timezone 'Africa/Cairo' ويمكن تعديله في `settings.py`.
-
-## التطوير المستقبلي
-
-- [ ] إضافة مرفقات للمهام
-- [ ] إضافة تعليقات على المهام
-- [ ] إضافة إشعارات بالبريد الإلكتروني
-- [ ] إضافة تقارير مفصلة
-- [ ] إضافة البحث والفلترة المتقدمة
-- [ ] إضافة نظام الأرشفة
-- [ ] إضافة واجهة API للموبايل
-
-## الدعم
-
-لأي استفسارات أو مشاكل، يرجى فتح issue في المستودع.
-
-## الرخصة
-
-هذا المشروع مفتوح المصدر ومتاح للاستخدام الحر.
-
+MIT
