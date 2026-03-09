@@ -137,6 +137,12 @@ class TaskDetailSerializer(TaskSerializer):
     history = TaskHistorySerializer(many=True, read_only=True)
     status_change_count = serializers.SerializerMethodField()
     completion_reopen_count = serializers.SerializerMethodField()
+
+    class Meta(TaskSerializer.Meta):
+        fields = TaskSerializer.Meta.fields + (
+            'comments', 'evaluations', 'history',
+            'status_change_count', 'completion_reopen_count',
+        )
     
     def get_status_change_count(self, obj):
         """عدد مرات تغيير الحالة من مكتمل إلى غير مكتمل"""

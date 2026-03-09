@@ -161,8 +161,8 @@ const Sidebar = ({ open, onClose, mobile }) => {
 
       {/* Menu Items */}
       <List sx={{ flex: 1, pt: 1 }}>
-        {filteredMenuItems.map((item) => (
-          <ListItem key={item.path} disablePadding>
+        {filteredMenuItems.map((item, index) => (
+          <ListItem key={`${item.path}-${index}`} disablePadding>
             <ListItemButton
               selected={isActive(item.path)}
               onClick={() => handleNavigation(item.path)}

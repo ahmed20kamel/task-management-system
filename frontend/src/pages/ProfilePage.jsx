@@ -288,7 +288,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label={t('auth.email')}
-                    value={editing ? formData.email : user.email}
+                    value={editing ? formData.email : (user.email || '')}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     disabled={!editing}
                     InputProps={{
@@ -304,7 +304,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label={t('auth.firstName')}
-                    value={editing ? formData.first_name : user.first_name}
+                    value={editing ? formData.first_name : (user.first_name || '')}
                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                     disabled={!editing}
                   />
@@ -313,7 +313,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label={t('auth.lastName')}
-                    value={editing ? formData.last_name : user.last_name}
+                    value={editing ? formData.last_name : (user.last_name || '')}
                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                     disabled={!editing}
                   />
@@ -322,7 +322,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label={t('auth.phone')}
-                    value={editing ? formData.phone : user.phone}
+                    value={editing ? formData.phone : (user.phone || '')}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     disabled={!editing}
                     InputProps={{
@@ -338,7 +338,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label="الوظيفة"
-                    value={editing ? formData.position : user.position}
+                    value={editing ? formData.position : (user.position || '')}
                     onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                     disabled={!editing}
                     InputProps={{
@@ -354,7 +354,7 @@ const ProfilePage = () => {
                   <TextField
                     fullWidth
                     label="نبذة عنك"
-                    value={editing ? formData.bio : user.bio}
+                    value={editing ? formData.bio : (user.bio || '')}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                     disabled={!editing}
                     multiline
