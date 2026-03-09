@@ -24,6 +24,9 @@ import {
   MenuItem,
   Box,
   CircularProgress,
+  Avatar,
+  Tooltip,
+  Divider,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -31,6 +34,12 @@ import {
   Delete as DeleteIcon,
   Assessment as AssessmentIcon,
   Visibility as VisibilityIcon,
+  Assignment as AssignmentIcon,
+  HourglassEmpty as PendingIcon,
+  PlayCircleOutline as InProgressIcon,
+  CheckCircle as CompletedIcon,
+  Warning as OverdueIcon,
+  PauseCircleOutline as OnHoldIcon,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -191,7 +200,7 @@ const AdminDashboard = () => {
         estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : null,
         actual_hours: formData.actual_hours ? parseFloat(formData.actual_hours) : null,
       };
-      
+
       if (selectedTask) {
         await api.put(`/tasks/${selectedTask.id}/`, submitData);
         toast.success('تم تحديث المهمة بنجاح');
@@ -228,8 +237,8 @@ const AdminDashboard = () => {
 
   const handleOpenEvaluation = (task) => {
     setTaskToEvaluate(task);
-    setEvaluationData({ 
-      rating: 3, 
+    setEvaluationData({
+      rating: 3,
       criteria: 'overall',
       feedback: '',
       evaluated_employee: task.assigned_to?.id || '',
@@ -296,6 +305,15 @@ const AdminDashboard = () => {
     return labels[priority] || priority;
   };
 
+  const statCards = [
+    { label: 'إجمالي المهام', value: statistics.total_tasks || 0, icon: <AssignmentIcon />, color: '#1A3A5C', bg: '#EBF0F7' },
+    { label: 'قيد الانتظار', value: statistics.pending_tasks || 0, icon: <PendingIcon />, color: '#f5a623', bg: '#FFF8E8' },
+    { label: 'قيد التنفيذ', value: statistics.in_progress_tasks || 0, icon: <InProgressIcon />, color: '#2A6496', bg: '#EBF3FC' },
+    { label: 'مكتملة', value: statistics.completed_tasks || 0, icon: <CompletedIcon />, color: '#28a745', bg: '#E8F5E9' },
+    { label: 'متأخرة', value: statistics.overdue_tasks || 0, icon: <OverdueIcon />, color: '#dc3545', bg: '#FDEAEA' },
+    { label: 'معلقة', value: statistics.on_hold_tasks || 0, icon: <OnHoldIcon />, color: '#f5a623', bg: '#FFF8E8' },
+  ];
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
@@ -306,218 +324,207 @@ const AdminDashboard = () => {
 
   return (
     <Container maxWidth="xl">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">لوحة تحكم المدير</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box>
+          <Typography variant="h4" fontWeight={700} color="#1A3A5C">
+            لوحة تحكم المدير
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            نظرة عامة على المهام والإحصائيات
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
+          sx={{ px: 3, py: 1.2 }}
         >
           مهمة جديدة
         </Button>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-            <CardContent>
-              <Typography color="inherit" gutterBottom>
-                إجمالي المهام
-              </Typography>
-              <Typography variant="h4" color="inherit">
-                {statistics.total_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ bgcolor: 'warning.light', color: 'warning.contrastText' }}>
-            <CardContent>
-              <Typography color="inherit" gutterBottom>
-                قيد الانتظار
-              </Typography>
-              <Typography variant="h4" color="inherit">
-                {statistics.pending_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ bgcolor: 'info.light', color: 'info.contrastText' }}>
-            <CardContent>
-              <Typography color="inherit" gutterBottom>
-                قيد التنفيذ
-              </Typography>
-              <Typography variant="h4" color="inherit">
-                {statistics.in_progress_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ bgcolor: 'success.light', color: 'success.contrastText' }}>
-            <CardContent>
-              <Typography color="inherit" gutterBottom>
-                مكتملة
-              </Typography>
-              <Typography variant="h4" color="inherit">
-                {statistics.completed_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card sx={{ bgcolor: 'error.light', color: 'error.contrastText' }}>
-            <CardContent>
-              <Typography color="inherit" gutterBottom>
-                متأخرة
-              </Typography>
-              <Typography variant="h4" color="inherit">
-                {statistics.overdue_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                معلقة
-              </Typography>
-              <Typography variant="h4" color="warning.main">
-                {statistics.on_hold_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* Statistics Cards */}
+      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        {statCards.map((stat, idx) => (
+          <Grid item xs={6} sm={4} md={2} key={idx}>
+            <Card sx={{ border: 'none', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Avatar
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      bgcolor: stat.bg,
+                      color: stat.color,
+                    }}
+                  >
+                    {stat.icon}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h5" fontWeight={700} color={stat.color}>
+                      {stat.value}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
+                      {stat.label}
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>العنوان</TableCell>
-              <TableCell>النوع</TableCell>
-              <TableCell>المكلف</TableCell>
-              <TableCell>الفريق</TableCell>
-              <TableCell>الحالة</TableCell>
-              <TableCell>الأولوية</TableCell>
-              <TableCell>تاريخ الانتهاء</TableCell>
-              <TableCell>الإجراءات</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tasks.map((task) => (
-              <TableRow key={task.id}>
-                <TableCell>
-                  <Typography variant="body2" fontWeight={500}>
-                    {task.title}
-                  </Typography>
-                  {task.task_type && (
-                    <Chip 
-                      label={task.task_type_name} 
-                      size="small" 
-                      sx={{ 
-                        mt: 0.5, 
-                        bgcolor: task.task_type_color || 'primary.main',
-                        color: 'white',
-                        fontSize: '0.7rem',
-                        height: '20px'
-                      }} 
-                    />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {task.task_type ? (
-                    <Chip 
-                      label={task.task_type_name} 
-                      size="small" 
-                      sx={{ bgcolor: task.task_type_color || 'primary.main', color: 'white' }} 
-                    />
-                  ) : (
-                    '-'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {task.assigned_to ? (
-                    <Box>
-                      <Typography variant="body2">
-                        {task.assigned_to_name || `${task.assigned_to?.first_name || ''} ${task.assigned_to?.last_name || ''}`}
-                      </Typography>
-                      {task.supervisor_name && (
-                        <Typography variant="caption" color="text.secondary">
-                          المشرف: {task.supervisor_name}
-                        </Typography>
-                      )}
-                    </Box>
-                  ) : (
-                    '-'
-                  )}
-                </TableCell>
-                <TableCell>
-                  {task.team_name ? (
-                    <Chip label={task.team_name} size="small" color="info" variant="outlined" />
-                  ) : (
-                    '-'
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={getStatusLabel(task.status)}
-                    color={getStatusColor(task.status)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={getPriorityLabel(task.priority)}
-                    color={getPriorityColor(task.priority)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  {task.due_date ? (
-                    <Box>
-                      <Typography variant="body2">
-                        {format(new Date(task.due_date), 'yyyy-MM-dd HH:mm', { locale: ar })}
-                      </Typography>
-                      {task.is_overdue && (
-                        <Typography variant="caption" color="error">
-                          متأخرة
-                        </Typography>
-                      )}
-                    </Box>
-                  ) : (
-                    '-'
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    <IconButton size="small" onClick={() => navigate(`/admin/tasks/${task.id}`)} color="primary">
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton size="small" onClick={() => handleOpenDialog(task)} color="warning">
-                      <EditIcon />
-                    </IconButton>
-                    {task.status === 'completed' && (
-                      <IconButton size="small" onClick={() => handleOpenEvaluation(task)} sx={{ color: 'secondary.main' }}>
-                        <AssessmentIcon />
-                      </IconButton>
-                    )}
-                    <IconButton size="small" onClick={() => handleDelete(task.id)} color="error">
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
+      {/* Tasks Table */}
+      <Paper sx={{ borderRadius: 3, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+        <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" fontWeight={600} color="#1A3A5C">
+            قائمة المهام
+          </Typography>
+          <Chip label={`${tasks.length} مهمة`} size="small" variant="outlined" />
+        </Box>
+        <Divider />
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#F7F9FC' }}>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>العنوان</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>المكلف</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الفريق</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الحالة</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الأولوية</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>تاريخ الانتهاء</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الإجراءات</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {tasks.map((task) => (
+                <TableRow key={task.id} sx={{ '&:hover': { bgcolor: '#EEF4FF' } }}>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight={500}>
+                      {task.title}
+                    </Typography>
+                    {task.task_type_name && (
+                      <Chip
+                        label={task.task_type_name}
+                        size="small"
+                        sx={{
+                          mt: 0.5,
+                          bgcolor: task.task_type_color || '#1A3A5C',
+                          color: 'white',
+                          fontSize: '0.65rem',
+                          height: 20,
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {task.assigned_to ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 28, height: 28, fontSize: '0.75rem', bgcolor: '#2A6496' }}>
+                          {(task.assigned_to_name || '?')[0]}
+                        </Avatar>
+                        <Box>
+                          <Typography variant="body2" fontSize="0.8rem">
+                            {task.assigned_to_name}
+                          </Typography>
+                          {task.supervisor_name && (
+                            <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
+                              المشرف: {task.supervisor_name}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">—</Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {task.team_name ? (
+                      <Chip label={task.team_name} size="small" variant="outlined" color="primary" />
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">—</Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={getStatusLabel(task.status)}
+                      color={getStatusColor(task.status)}
+                      size="small"
+                      sx={{ fontWeight: 500 }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={getPriorityLabel(task.priority)}
+                      color={getPriorityColor(task.priority)}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {task.due_date ? (
+                      <Box>
+                        <Typography variant="body2" fontSize="0.8rem">
+                          {format(new Date(task.due_date), 'yyyy-MM-dd HH:mm', { locale: ar })}
+                        </Typography>
+                        {task.is_overdue && (
+                          <Chip label="متأخرة" color="error" size="small" variant="outlined" sx={{ mt: 0.5, height: 18, fontSize: '0.65rem' }} />
+                        )}
+                      </Box>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">—</Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <Tooltip title="عرض">
+                        <IconButton size="small" onClick={() => navigate(`/admin/tasks/${task.id}`)} sx={{ color: '#2A6496' }}>
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="تعديل">
+                        <IconButton size="small" onClick={() => handleOpenDialog(task)} sx={{ color: '#f5a623' }}>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      {task.status === 'completed' && (
+                        <Tooltip title="تقييم">
+                          <IconButton size="small" onClick={() => handleOpenEvaluation(task)} sx={{ color: '#28a745' }}>
+                            <AssessmentIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <Tooltip title="حذف">
+                        <IconButton size="small" onClick={() => handleDelete(task.id)} sx={{ color: '#dc3545' }}>
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {tasks.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} align="center" sx={{ py: 6 }}>
+                    <AssignmentIcon sx={{ fontSize: 48, color: 'text.secondary', opacity: 0.3 }} />
+                    <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
+                      لا توجد مهام حالياً
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
 
       {/* Create/Edit Task Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>{selectedTask ? 'تعديل المهمة' : 'مهمة جديدة'}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 600, color: '#1A3A5C' }}>
+          {selectedTask ? 'تعديل المهمة' : 'مهمة جديدة'}
+        </DialogTitle>
+        <Divider />
         <DialogContent>
           <TextField
             fullWidth
@@ -549,9 +556,7 @@ const AdminDashboard = () => {
               >
                 <MenuItem value="">لا يوجد</MenuItem>
                 {taskTypes.map((type) => (
-                  <MenuItem key={type.id} value={type.id}>
-                    {type.name}
-                  </MenuItem>
+                  <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
                 ))}
               </TextField>
             </Grid>
@@ -616,9 +621,7 @@ const AdminDashboard = () => {
               >
                 <MenuItem value="">لا يوجد</MenuItem>
                 {teams.map((team) => (
-                  <MenuItem key={team.id} value={team.id}>
-                    {team.name}
-                  </MenuItem>
+                  <MenuItem key={team.id} value={team.id}>{team.name}</MenuItem>
                 ))}
               </TextField>
             </Grid>
@@ -684,15 +687,16 @@ const AdminDashboard = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>إلغاء</Button>
-          <Button onClick={handleSubmit} variant="contained">حفظ</Button>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleCloseDialog} color="inherit">إلغاء</Button>
+          <Button onClick={handleSubmit} variant="contained" sx={{ px: 4 }}>حفظ</Button>
         </DialogActions>
       </Dialog>
 
       {/* Evaluation Dialog */}
       <Dialog open={evaluationDialog} onClose={() => setEvaluationDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>تقييم المهمة</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 600, color: '#1A3A5C' }}>تقييم المهمة</DialogTitle>
+        <Divider />
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -758,9 +762,9 @@ const AdminDashboard = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEvaluationDialog(false)}>إلغاء</Button>
-          <Button onClick={handleEvaluate} variant="contained">حفظ التقييم</Button>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={() => setEvaluationDialog(false)} color="inherit">إلغاء</Button>
+          <Button onClick={handleEvaluate} variant="contained" sx={{ px: 4 }}>حفظ التقييم</Button>
         </DialogActions>
       </Dialog>
 
@@ -770,4 +774,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

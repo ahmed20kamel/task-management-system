@@ -21,10 +21,16 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Avatar,
+  Tooltip,
+  Divider,
 } from '@mui/material';
 import {
   Visibility as VisibilityIcon,
   CheckCircle as CheckCircleIcon,
+  Assignment as AssignmentIcon,
+  HourglassEmpty as PendingIcon,
+  PlayCircleOutline as InProgressIcon,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -103,6 +109,13 @@ const EmployeeDashboard = () => {
     return new Date(dueDate) < new Date();
   };
 
+  const statCards = [
+    { label: 'إجمالي المهام', value: statistics.total_tasks || 0, icon: <AssignmentIcon />, color: '#1A3A5C', bg: '#EBF0F7' },
+    { label: 'قيد الانتظار', value: statistics.pending_tasks || 0, icon: <PendingIcon />, color: '#f5a623', bg: '#FFF8E8' },
+    { label: 'قيد التنفيذ', value: statistics.in_progress_tasks || 0, icon: <InProgressIcon />, color: '#2A6496', bg: '#EBF3FC' },
+    { label: 'مكتملة', value: statistics.completed_tasks || 0, icon: <CheckCircleIcon />, color: '#28a745', bg: '#E8F5E9' },
+  ];
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
@@ -113,9 +126,16 @@ const EmployeeDashboard = () => {
 
   return (
     <Container maxWidth="xl">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">لوحة تحكم الموظف</Typography>
-        <FormControl sx={{ minWidth: 200 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box>
+          <Typography variant="h4" fontWeight={700} color="#1A3A5C">
+            لوحة تحكم الموظف
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            متابعة المهام المسندة إليك
+          </Typography>
+        </Box>
+        <FormControl sx={{ minWidth: 200 }} size="small">
           <InputLabel>فلترة حسب الحالة</InputLabel>
           <Select
             value={statusFilter}
@@ -131,133 +151,153 @@ const EmployeeDashboard = () => {
         </FormControl>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                إجمالي المهام
-              </Typography>
-              <Typography variant="h4">{statistics.total_tasks || 0}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                قيد الانتظار
-              </Typography>
-              <Typography variant="h4" color="warning.main">
-                {statistics.pending_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                قيد التنفيذ
-              </Typography>
-              <Typography variant="h4" color="primary.main">
-                {statistics.in_progress_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary" gutterBottom>
-                مكتملة
-              </Typography>
-              <Typography variant="h4" color="success.main">
-                {statistics.completed_tasks || 0}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* Statistics Cards */}
+      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        {statCards.map((stat, idx) => (
+          <Grid item xs={6} sm={3} key={idx}>
+            <Card sx={{ border: 'none', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Avatar
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      bgcolor: stat.bg,
+                      color: stat.color,
+                    }}
+                  >
+                    {stat.icon}
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h5" fontWeight={700} color={stat.color}>
+                      {stat.value}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
+                      {stat.label}
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>العنوان</TableCell>
-              <TableCell>الحالة</TableCell>
-              <TableCell>الأولوية</TableCell>
-              <TableCell>تاريخ الانتهاء</TableCell>
-              <TableCell>التقييم</TableCell>
-              <TableCell>الإجراءات</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tasks.map((task) => (
-              <TableRow key={task.id} sx={{ bgcolor: isOverdue(task.due_date) && task.status !== 'completed' ? 'error.light' : 'inherit' }}>
-                <TableCell>{task.title}</TableCell>
-                <TableCell>
-                  <Select
-                    value={task.status}
-                    size="small"
-                    onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                    sx={{ minWidth: 120 }}
-                  >
-                    <MenuItem value="pending">قيد الانتظار</MenuItem>
-                    <MenuItem value="in_progress">قيد التنفيذ</MenuItem>
-                    <MenuItem value="completed">مكتمل</MenuItem>
-                  </Select>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label={getPriorityLabel(task.priority)}
-                    color={getPriorityColor(task.priority)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Box>
-                    {task.due_date ? format(new Date(task.due_date), 'yyyy-MM-dd HH:mm', { locale: ar }) : '-'}
-                    {isOverdue(task.due_date) && task.status !== 'completed' && (
-                      <Chip label="متأخرة" color="error" size="small" sx={{ ml: 1 }} />
-                    )}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  {task.evaluation ? (
+      {/* Tasks Table */}
+      <Paper sx={{ borderRadius: 3, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+        <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h6" fontWeight={600} color="#1A3A5C">
+            مهامي
+          </Typography>
+          <Chip label={`${tasks.length} مهمة`} size="small" variant="outlined" />
+        </Box>
+        <Divider />
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#F7F9FC' }}>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>العنوان</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الحالة</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الأولوية</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>تاريخ الانتهاء</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>التقييم</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#1A3A5C' }}>الإجراءات</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tasks.map((task) => (
+                <TableRow
+                  key={task.id}
+                  sx={{
+                    '&:hover': { bgcolor: '#EEF4FF' },
+                    bgcolor: isOverdue(task.due_date) && task.status !== 'completed' ? '#FFF5F5' : 'inherit',
+                  }}
+                >
+                  <TableCell>
+                    <Typography variant="body2" fontWeight={500}>{task.title}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                      value={task.status}
+                      size="small"
+                      onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                      sx={{ minWidth: 130, fontSize: '0.8rem' }}
+                    >
+                      <MenuItem value="pending">قيد الانتظار</MenuItem>
+                      <MenuItem value="in_progress">قيد التنفيذ</MenuItem>
+                      <MenuItem value="completed">مكتمل</MenuItem>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={getPriorityLabel(task.priority)}
+                      color={getPriorityColor(task.priority)}
+                      size="small"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell>
                     <Box>
-                      <Chip label={`${task.evaluation.rating}/5`} color="primary" size="small" />
-                      {task.evaluation.feedback && (
-                        <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
-                          {task.evaluation.feedback}
-                        </Typography>
+                      <Typography variant="body2" fontSize="0.8rem">
+                        {task.due_date ? format(new Date(task.due_date), 'yyyy-MM-dd HH:mm', { locale: ar }) : '—'}
+                      </Typography>
+                      {isOverdue(task.due_date) && task.status !== 'completed' && (
+                        <Chip label="متأخرة" color="error" size="small" variant="outlined" sx={{ mt: 0.5, height: 18, fontSize: '0.65rem' }} />
                       )}
                     </Box>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      لا يوجد تقييم
+                  </TableCell>
+                  <TableCell>
+                    {task.evaluation ? (
+                      <Box>
+                        <Chip label={`${task.evaluation.rating}/5`} color="primary" size="small" />
+                        {task.evaluation.feedback && (
+                          <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                            {task.evaluation.feedback}
+                          </Typography>
+                        )}
+                      </Box>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary" fontSize="0.8rem">
+                        لا يوجد تقييم
+                      </Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      <Tooltip title="عرض التفاصيل">
+                        <IconButton size="small" onClick={() => navigate(`/dashboard/tasks/${task.id}`)} sx={{ color: '#2A6496' }}>
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      {task.status === 'pending' && (
+                        <Tooltip title="بدء العمل">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleStatusChange(task.id, 'in_progress')}
+                            sx={{ color: '#28a745' }}
+                          >
+                            <CheckCircleIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {tasks.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
+                    <AssignmentIcon sx={{ fontSize: 48, color: 'text.secondary', opacity: 0.3 }} />
+                    <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
+                      لا توجد مهام حالياً
                     </Typography>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <IconButton size="small" onClick={() => navigate(`/dashboard/tasks/${task.id}`)}>
-                    <VisibilityIcon />
-                  </IconButton>
-                  {task.status === 'pending' && (
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => handleStatusChange(task.id, 'in_progress')}
-                    >
-                      <CheckCircleIcon />
-                    </IconButton>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
 
       <ToastContainer position="top-left" rtl={true} />
     </Container>
@@ -265,4 +305,3 @@ const EmployeeDashboard = () => {
 };
 
 export default EmployeeDashboard;
-
