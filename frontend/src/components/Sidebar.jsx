@@ -103,14 +103,12 @@ const Sidebar = ({ open, onClose, mobile }) => {
         <Box
           component="img"
           src="/logo.svg"
-          alt="Company Logo"
+          alt="Norka Logo"
           sx={{
-            width: 60,
-            height: 60,
-            bgcolor: 'white',
-            borderRadius: '50%',
-            p: 1,
-            border: '2px solid white',
+            width: 52,
+            height: 52,
+            borderRadius: '14px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
           }}
         />
         <Typography variant="h6" fontWeight={600} align="center">
