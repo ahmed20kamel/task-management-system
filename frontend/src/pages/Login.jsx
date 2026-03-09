@@ -44,27 +44,54 @@ const Login = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #1A3A5C 0%, #2A6496 100%)',
+        justifyContent: 'center',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: 'url(/login-bg.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        },
+        '&::after': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, rgba(26,58,92,0.85) 0%, rgba(42,100,150,0.80) 100%)',
+        },
       }}
     >
-      <Container maxWidth="sm">
-        <Paper elevation={8} sx={{ p: 5, borderRadius: 4 }}>
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
+        <Paper
+          elevation={12}
+          sx={{
+            p: { xs: 4, sm: 5 },
+            borderRadius: 4,
+            backdropFilter: 'blur(10px)',
+            bgcolor: 'rgba(255,255,255,0.95)',
+          }}
+        >
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
             <Box
+              component="img"
+              src="/logo.svg"
+              alt="Norka Logo"
               sx={{
                 width: 64,
                 height: 64,
                 borderRadius: '16px',
-                bgcolor: '#1A3A5C',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
                 mb: 2,
                 boxShadow: '0 4px 14px rgba(26,58,92,0.3)',
               }}
-            >
-              <Typography variant="h4" sx={{ color: 'white', fontWeight: 700 }}>N</Typography>
-            </Box>
+            />
             <Typography variant="h6" fontWeight={600} color="#1A3A5C">
               Norka Solution
             </Typography>
