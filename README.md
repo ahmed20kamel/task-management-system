@@ -1,6 +1,14 @@
 # Task Management System
 
-A full-stack task management application with role-based access control, team management, and multi-criteria evaluation system.
+A full-stack task management application for organizations to assign, track, and evaluate work across teams. Combines role-based access control (Admin/Supervisor/Employee), team management, task tracking with comments and full history, a multi-criteria performance evaluation system, and a bilingual (Arabic/English) UI with full RTL support.
+
+## Architecture
+
+- **Decoupled API + SPA:** Django REST Framework backend, React 18 single-page frontend
+- **Auth:** Token-based authentication
+- **Data:** SQLite for development, PostgreSQL in production
+- **Notifications:** polling-based real-time notification system
+- **i18n:** Arabic (RTL) + English (LTR), Material-UI 5 on the frontend
 
 ## Tech Stack
 
